@@ -5,42 +5,46 @@
 #         self.next = None
 
 class Solution(object):
-    def addTwoNumbers(self, l1, l2):
+    # maybe standard version
+    def _addTwoNumbers(self, l1, l2):
         """
         :type l1: ListNode
         :type l2: ListNode
         :rtype: ListNode
         """
-        head = dummy = ListNode(-1)
+        p = dummy = ListNode(-1)
         carry = 0
-        while l1 or l2:
-            if l1:
-                a = l1.val
-                l1 = l1.next
-            else:
-                a = 0
-            if l2:
-                b = l2.val
-                l2 = l2.next
-            else:
-                b = 0
-                
-            c = carry
-            carry = 0
-            sum = a + b + c
-            if sum >= 10:
-                carry = 1
-                head.next = ListNode(sum - 10)
-            else:
-                head.next = ListNode(sum)
-            head = head.next
-
-        if carry == 1:
-            head.next = ListNode(1)
+        while l1 and l2:
+            p.next = ListNode(l1.val + l2.val + carry)
+            carry = p.next.val / 10
+            p.next.val %= 10
+            p = p.next
+            l1 = l1.next
+            l2 = l2.next
         
-            
+        res = l1 or l2
+        while res:
+            p.next = ListNode(res.val + carry)
+            carry = p.next.val / 10
+            p.next.val %= 10
+            p = p.next
+            res = res.next
+        if carry:
+            p.next = ListNode(1)
+        return dummy.next
+    
+    # shorter version
+    def addTwoNumbers(self, l1, l2):
+        p = dummy = ListNode(-1)
+        carry = 0
+        while l1 or l2 or carry:
+            val = (l1 and l1.val or 0) + (l2 and l2.val or 0) + carry
+            carry = val / 10
+            p.next = ListNode(val % 10)
+            l1 = l1 and l1.next
+            l2 = l2 and l2.next
+            p = p.next
         return dummy.next
             
-            
-            
-                
+        
+        
